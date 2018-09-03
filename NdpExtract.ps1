@@ -217,11 +217,13 @@ foreach ($mspFilePath in $mspFilePaths)
 # Extract MSP package.
 #
 
+$msixExePath = Join-Path -Path $PSScriptRoot -ChildPath 'msix2\release\msix.exe'
+
 $argList = ($mspFilePath.FullName),'/out',($mspExtractDirectory.FullName),'/ext'
 
 Write-Verbose -Message 'The MSP Package extracting...'
 
-Start-Process -FilePath 'H:\tool\msix2\release\msix.exe' -ArgumentList $argList -Wait -WindowStyle Hidden
+Start-Process -FilePath $msixExePath -ArgumentList $argList -Wait -WindowStyle Hidden
 
 #
 # Retrieve CAB file.
@@ -346,11 +348,13 @@ $cabFilePaths | ForEach-Object {
         }
         else
         {
+            $ExtractAppExePath = Join-Path -Path $PSScriptRoot -ChildPath 'ExtractApp\ExtractApp.exe'
+
             # Rename by the original file name.
             $stdOutFilePath = Join-Path -Path $logDirPath -ChildPath ('{0}.out.txt' -f ([System.IO.Path]::GetFileName($_.FullName)))
             #$stdErrFilePath = Join-Path -Path $logDirPath -ChildPath ('{0}.err.txt' -f ([System.IO.Path]::GetFileName($_.FullName)))
             $argList = ('"{0}"' -f $_.FullName)
-            $proc = Start-Process -FilePath 'H:\tool\ExtractApp\ExtractApp.exe' -ArgumentList $argList -Wait -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdOutFilePath #-RedirectStandardError $stdErrFilePath
+            $proc = Start-Process -FilePath $ExtractAppExePath -ArgumentList $argList -Wait -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdOutFilePath #-RedirectStandardError $stdErrFilePath
 
             Write-Log -LogFilePath $logFilePath -Message ('Rename: "{0}"' -f $_.FullName)
 
